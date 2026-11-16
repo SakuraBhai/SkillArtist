@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,6 +90,20 @@ header{height:70px;display:flex;align-items:center;justify-content:space-between
 .backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:15;opacity:0;transition:opacity .3s ease}
 .chart-scroll{overflow-x:auto}
 @media (max-width:760px){aside{position:fixed;z-index:20;inset:0 auto 0 0;width:260px;overflow-y:auto;transform:translateX(-100%);padding-top:env(safe-area-inset-top,0px)}aside.open{transform:none}.backdrop.show{display:block;opacity:1}header{padding:0 14px}.me{font-size:14px}.grid{grid-template-columns:1fr;gap:14px}.profile{grid-column:auto;padding:26px 20px}.stat{min-height:110px;padding:18px}.stat .v{font-size:30px}.stat .ic{width:52px;height:52px;font-size:22px}.wrap{padding:14px}.banner{padding:16px 18px;border-radius:16px}.banner h1{font-size:22px}.banner small{font-size:14px}.pills{width:100%}.pill{font-size:13px;padding:7px 10px}.chart{padding:12px;margin-top:16px}.chart h2{font-size:16px}.chart svg{min-width:640px}}
+.upd{margin-top:22px;border:1px solid var(--brand);border-radius:16px;padding:18px 20px;background:var(--bg);animation:fadeInUp .6s cubic-bezier(0.16,1,0.3,1) .5s both}
+.upd h2{margin:0 0 12px;font-size:18px;letter-spacing:.3px}
+.upd-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.upd input{font:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);min-width:0}
+.upd input:focus{border-color:var(--brand2)}
+#amt{flex:1 1 200px}#edate{flex:0 1 170px}
+.upd button{font:inherit;font-size:15px;font-weight:600;padding:10px 20px;border:0;border-radius:10px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand2));transition:transform .2s ease,box-shadow .2s ease}
+.upd button:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(107,68,35,.35)}
+.upd button:active{transform:scale(.96)}
+.upd button.ghost{background:var(--chip);color:var(--brand);border:1px solid var(--line)}
+.chips{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.chips button{padding:5px 14px;font-size:13px;background:var(--chip);color:var(--brand);border:1px solid var(--line)}
+#umsg{margin-top:10px;font-size:14px;min-height:20px;color:#2e9d57}#umsg.err{color:#c0392b}
+@media (max-width:760px){.upd{padding:12px;margin-top:16px}.upd button{flex:1 1 auto}#edate{flex:1 1 140px}}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 </style>
 </head>
@@ -129,22 +144,34 @@ header{height:70px;display:flex;align-items:center;justify-content:space-between
         <div class="mail">✉ user@example.com</div>
         <div class="pkg">👑 Alpha Package</div>
       </div>
-      <div class="card stat"><div><h4>Today's Earning</h4><div class="v">₹1800</div><div class="s">• Updated just now</div></div><div class="ic">₹</div></div>
-      <div class="card stat"><div><h4>Last 7 Days</h4><div class="v">₹1800</div><div class="s">• Weekly summary</div></div><div class="ic">📊</div></div>
-      <div class="card stat"><div><h4>Last 30 Days</h4><div class="v">₹1800</div><div class="s">• Monthly summary</div></div><div class="ic">📅</div></div>
-      <div class="card stat"><div><h4>All Time Earnings</h4><div class="v">₹1800</div><div class="s">• Total lifetime</div></div><div class="ic">🏆</div></div>
-      <div class="card stat"><div><h4>Leadership Incentive</h4><div class="v">₹0</div><div class="s">• Residual earnings</div></div><div class="ic">🤲</div></div>
+      <div class="card stat"><div><h4>Today's Earning</h4><div class="v" id="v-today">₹0</div><div class="s" id="upd">• Updated just now</div></div><div class="ic">₹</div></div>
+      <div class="card stat"><div><h4>Last 7 Days</h4><div class="v" id="v-week">₹0</div><div class="s">• Weekly summary</div></div><div class="ic">📊</div></div>
+      <div class="card stat"><div><h4>Last 30 Days</h4><div class="v" id="v-month">₹0</div><div class="s">• Monthly summary</div></div><div class="ic">📅</div></div>
+      <div class="card stat"><div><h4>All Time Earnings</h4><div class="v" id="v-all">₹0</div><div class="s">• Total lifetime</div></div><div class="ic">🏆</div></div>
+      <div class="card stat"><div><h4>Leadership Incentive</h4><div class="v" id="v-lead">₹0</div><div class="s">• Residual earnings</div></div><div class="ic">🤲</div></div>
     </section>
 
     <section class="chart">
       <h2>SALES LAST 7 DAYS</h2>
       <div class="chart-scroll"><svg id="svg" viewBox="0 0 1000 360" role="img" aria-label="Sales over the last 7 days"></svg></div>
     </section>
+
+    <section class="upd">
+      <h2>UPDATE EARNING</h2>
+      <div class="upd-row">
+        <input id="amt" type="number" inputmode="decimal" min="0" step="any" placeholder="Amount (₹) jaise 500" aria-label="Earning amount in rupees">
+        <input id="edate" type="date" aria-label="Date">
+        <button id="addbtn" type="button">Add Earning</button>
+        <button id="clrbtn" type="button" class="ghost">Reset</button>
+      </div>
+      <div class="chips"><button type="button" data-q="100">+100</button><button type="button" data-q="500">+500</button><button type="button" data-q="1000">+1000</button><button type="button" data-q="5000">+5000</button></div>
+      <div id="umsg" role="status" aria-live="polite"></div>
+    </section>
   </div>
 </main>
 </div>
 <script>
-const USER={name:"SAKURA BHAI",email:"sakurahoshix0@gmail.com",sales:[0,0,0,0,0,0,0]};
+const USER={name:"SAKURA BHAI",email:"sakurahoshix0@gmail.com"};
 const $=id=>document.getElementById(id);
 const svg=(p,s)=>'<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';
 const CAL='<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>';
@@ -185,20 +212,101 @@ function tick(){
 }
 tick();setInterval(tick,30000);
 
-function draw(){
-  const data=USER.sales,max=Math.max(1,...data),L=60,R=980,T=20,B=320;
-  const lo=Math.max(...data)===0?-1:0,hi=Math.max(...data)===0?1:max*1.1;
+/* ================= LIVE EARNINGS ENGINE =================
+   Cards + chart ek hi data se bante hain aur khud update hote hain.
+   API_URL set karo (neeche) to server se data aayega, warna browser storage use hoga.
+   API ko ye JSON return karna hai:
+   { "earnings":[{"date":"2026-11-16","amount":250}, ...], "leadership": 0 }
+   (date "YYYY-MM-DD" ya ISO timestamp, amount rupees me)                          */
+const CONFIG={API_URL:"",POLL_MS:15000,STORAGE_KEY:"sa_earnings_v1"};
+let EARN=[],LEAD=0,lastSig="",firstDraw=true;
+
+const pad=n=>String(n).padStart(2,"0");
+const dkey=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const keyOf=v=>{if(typeof v==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(v))return v;const d=new Date(v);return isNaN(d)?null:dkey(d)};
+const inr=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2});
+
+function compute(){
+  const map={};let all=0;
+  EARN.forEach(e=>{const k=keyOf(e.date),a=Number(e.amount)||0;if(!k)return;map[k]=(map[k]||0)+a;all+=a});
+  const base=new Date();base.setHours(0,0,0,0);
+  const days=[];
+  for(let i=29;i>=0;i--){const d=new Date(base);d.setDate(d.getDate()-i);days.push({d,v:map[dkey(d)]||0})}
+  const sum=n=>days.slice(-n).reduce((t,x)=>t+x.v,0);
+  return{days:days.slice(-7),today:days[29].v,week:sum(7),month:sum(30),all};
+}
+
+function setNum(el,to){
+  const from=el._v||0;el._v=to;cancelAnimationFrame(el._r);
+  if(from===to||matchMedia("(prefers-reduced-motion: reduce)").matches){el.textContent=inr(to);return}
+  const t0=performance.now(),dur=800;
+  const run=t=>{const p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=p<1?inr(Math.round(from+(to-from)*e)):inr(to);
+    if(p<1)el._r=requestAnimationFrame(run)};
+  el._r=requestAnimationFrame(run);
+}
+
+function niceMax(m){
+  if(m<=0)return 10;
+  const p=Math.pow(10,Math.floor(Math.log10(m))),f=m/p;
+  return(f<=1?1:f<=2?2:f<=5?5:10)*p;
+}
+
+function drawChart(days){
+  const data=days.map(x=>x.v),L=95,R=980,T=20,B=320;
+  const hi=niceMax(Math.max(...data)),lo=0;
   const y=v=>B-(v-lo)/(hi-lo)*(B-T);
   let s="";
-  for(let i=0;i<=10;i++){const v=lo+(hi-lo)*i/10;s+=`<line x1="${L}" x2="${R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${v.toFixed(1)}</text>`}
-  const pts=data.map((v,i)=>{const x=L+i*(R-L)/6;const dt=new Date();dt.setDate(dt.getDate()-(6-i));return{x,y:y(v),l:dt.toISOString().slice(0,10),v}});
-  s+=`<polyline class="chart-line" fill="none" stroke="var(--brand)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${pts.map(p=>p.x+","+p.y).join(" ")}"/>`;
+  for(let i=0;i<=5;i++){const v=hi*i/5;s+=`<line x1="${L}" x2="${R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${inr(v)}</text>`}
+  const pts=days.map((o,i)=>({x:L+i*(R-L)/6,y:y(o.v),v:o.v,l:o.d.toLocaleDateString("en-GB",{day:"2-digit",month:"short"})}));
+  const still=firstDraw?"":' style="animation:none;stroke-dashoffset:0"';
+  s+=`<polyline class="chart-line"${still} fill="none" stroke="var(--brand)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${pts.map(p=>p.x+","+p.y).join(" ")}"/>`;
   pts.forEach((p,i)=>{
-    s+=`<circle class="chart-dot" style="animation-delay:${0.75+i*0.08}s" cx="${p.x}" cy="${p.y}" r="5" fill="var(--bg)" stroke="var(--brand)" stroke-width="2.5"><title>${p.l}: ₹${p.v}</title></circle><text x="${p.x}" y="${B+28}" text-anchor="middle">${p.l}</text>`;
+    const st=firstDraw?`animation-delay:${0.75+i*0.08}s`:"animation:none";
+    s+=`<circle class="chart-dot" style="${st}" cx="${p.x}" cy="${p.y}" r="5" fill="var(--bg)" stroke="var(--brand)" stroke-width="2.5"><title>${p.l}: ${inr(p.v)}</title></circle><text x="${p.x}" y="${B+28}" text-anchor="middle">${p.l}</text>`;
   });
   $("svg").innerHTML=s;
+  firstDraw=false;
 }
-draw();
+
+function render(){
+  const sig=JSON.stringify([EARN,LEAD,dkey(new Date())]);   // data ya din badle tabhi redraw
+  if(sig===lastSig)return;lastSig=sig;
+  const c=compute();
+  setNum($("v-today"),c.today);setNum($("v-week"),c.week);setNum($("v-month"),c.month);
+  setNum($("v-all"),c.all);setNum($("v-lead"),LEAD);
+  drawChart(c.days);
+}
+
+function readLocal(){try{const j=JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY)||"{}");EARN=Array.isArray(j.earnings)?j.earnings:[];LEAD=Number(j.leadership)||0}catch(e){}}
+function saveLocal(){try{localStorage.setItem(CONFIG.STORAGE_KEY,JSON.stringify({earnings:EARN,leadership:LEAD}))}catch(e){}}
+
+async function load(){
+  if(CONFIG.API_URL){
+    try{
+      const r=await fetch(CONFIG.API_URL,{cache:"no-store",credentials:"include"});
+      if(!r.ok)throw new Error(r.status);
+      const j=await r.json();
+      EARN=Array.isArray(j.earnings)?j.earnings:[];LEAD=Number(j.leadership)||0;
+    }catch(e){console.warn("Earnings fetch failed:",e);return}
+  }else readLocal();
+  $("upd").textContent="• Updated "+new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"});
+  render();
+}
+
+/* Test / manual helpers (browser console me chalao):
+   addEarning(500)  -> aaj ki earning me ₹500 jodo
+   addEarning(300,"2026-11-14") -> kisi purani date me jodo
+   setLeadership(1200), clearEarnings()                                           */
+window.addEarning=(amt,date)=>{EARN.push({date:date||dkey(new Date()),amount:Number(amt)||0});if(!CONFIG.API_URL)saveLocal();render()};
+window.setLeadership=n=>{LEAD=Number(n)||0;if(!CONFIG.API_URL)saveLocal();render()};
+window.clearEarnings=()=>{EARN=[];LEAD=0;if(!CONFIG.API_URL)saveLocal();render()};
+
+load();
+setInterval(load,CONFIG.POLL_MS);                                   // har 15 sec me auto refresh
+setInterval(render,30000);                                          // raat 12 baje chart khud aage khiske
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)load()});
+window.addEventListener("storage",e=>{if(e.key===CONFIG.STORAGE_KEY)load()});  // doosre tab me change ho to bhi update
 
 function setMenu(o){$("side").classList.toggle("open",o);$("bd").classList.toggle("show",o)}
 $("burger").onclick=()=>setMenu(!$("side").classList.contains("open"));
@@ -211,24 +319,30 @@ document.querySelectorAll("nav a").forEach(a=>a.onclick=()=>{
   setTimeout(()=>{a.style.transform=""},150);
 });
 
-function animateCounters(){
-  document.querySelectorAll('.stat .v').forEach(el=>{
-    const raw=el.textContent.trim();
-    const m=raw.match(/^([^0-9]*)([0-9]+)(.*)$/);
-    if(!m) return;
-    const prefix=m[1]||'', target=parseInt(m[2],10)||0, suffix=m[3]||'';
-    if(target===0) return;
-    let start=0; const dur=1000, t0=performance.now();
-    const run=t=>{
-      const p=Math.min((t-t0)/dur,1);
-      const ease=1-Math.pow(1-p,3);
-      el.textContent=prefix+Math.round(start+(target-start)*ease)+suffix;
-      if(p<1) requestAnimationFrame(run);
-    };
-    requestAnimationFrame(run);
-  });
+
+/* ===== Update Earning form ===== */
+const edate=$("edate");
+edate.value=dkey(new Date());edate.max=dkey(new Date());
+function msg(t,err){const m=$("umsg");m.textContent=t;m.className=err?"err":"";clearTimeout(m._t);m._t=setTimeout(()=>{m.textContent=""},4000)}
+async function submitEarning(){
+  const amt=parseFloat($("amt").value);
+  if(!(amt>0)){msg("Sahi amount daalo (0 se zyada).",true);return}
+  const date=edate.value||dkey(new Date());
+  if(CONFIG.API_URL){
+    try{
+      const r=await fetch(CONFIG.API_URL,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({date,amount:amt})});
+      if(!r.ok)throw new Error(r.status);
+      await load();
+    }catch(e){msg("Server par save nahi hua. Dobara try karo.",true);return}
+  }else addEarning(amt,date);
+  $("amt").value="";
+  msg("✔ "+inr(amt)+" add ho gaya ("+date+")");
 }
-animateCounters();
+$("addbtn").onclick=submitEarning;
+$("amt").addEventListener("keydown",e=>{if(e.key==="Enter")submitEarning()});
+document.querySelectorAll(".chips button").forEach(b=>b.onclick=()=>{$("amt").value=b.dataset.q;$("amt").focus()});
+if(CONFIG.API_URL)$("clrbtn").style.display="none";
+$("clrbtn").onclick=()=>{if(confirm("Saari earning reset kar dein?")){clearEarnings();msg("Reset ho gaya.")}};
 </script>
 </body>
 </html>
